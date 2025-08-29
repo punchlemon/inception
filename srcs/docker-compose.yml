@@ -1,11 +1,37 @@
-version: "3.9"
+version: "3.8"
 
 services:
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    ports: "443:443"
+    volumes:
+      - wp_data:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - inception
+    restart: always
+    secrets:
+      - tls_cert
+      - tls_key
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    env_file: .env
+    volumes:
+      - wp_data:/var/www/html
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    restart: always
+
   mariadb:
     build: ./requirements/mariadb
     container_name: mariadb
-    env_file:
-      - .env
+    env_file: .env
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -15,43 +41,18 @@ services:
       - db_password
       - db_root_password
 
-  wordpress:
-    build: ./requirements/wordpress
-    container_name: wordpress
-    env_file:
-      - .env
-    volumes:
-      - wp_data:/var/www/html
-    depends_on:
-      - mariadb
-    networks:
-      - inception
-    restart: always
-
-  nginx:
-    build: ./requirements/nginx
-    container_name: nginx
-    ports:
-      - "443:443"
-    volumes:
-      - wp_data:/var/www/html
-    depends_on:
-      - wordpress
-    networks:
-      - inception
-    restart: always
-
-# 永続ボリューム
 volumes:
-  db_data:
   wp_data:
+  db_data:
 
-# ネットワーク
 networks:
   inception:
 
-# シークレット（パスワード類）
 secrets:
+  tls_cert:
+    file: ../secrets/tls_cert.txt
+  tls_key:
+    file: ../secrets/tls_key.txt
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
