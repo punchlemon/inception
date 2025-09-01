@@ -7,5 +7,4 @@ socket          = /var/run/mysqld/mysqld.sock
 
 # セキュリティとパフォーマンス推奨
 skip-networking=0
-skip-bind-address
 

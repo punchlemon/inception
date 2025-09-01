@@ -1,21 +1,20 @@
-# Debian (penultimate stable)
 FROM debian:bullseye
 
-# パッケージ更新 & MariaDB インストール
 RUN apt-get update && apt-get install -y \
     mariadb-server \
+    mariadb-client \
+    bash \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
-# 設定ファイルをコピー
+RUN mkdir -p /run/secrets /var/run/mysqld && chown -R mysql:mysql /var/run/mysqld
+
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/init-db.sh /usr/local/bin/init-db.sh
+COPY tools/entrypoint.sh /entrypoint.sh
+RUN chmod +x /usr/local/bin/init-db.sh /entrypoint.sh
 
-# 初期化スクリプトをコピー
-COPY tools/init-db.sh /docker-entrypoint-initdb.d/init-db.sh
-RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
-
-# データベースのデータを永続化するためのディレクトリ
 VOLUME /var/lib/mysql
 
-# MariaDB をフォアグラウンドで起動
-CMD ["mysqld_safe"]
+CMD ["/entrypoint.sh"]
 

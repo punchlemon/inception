@@ -1,0 +1,11 @@
+# Ignore secrets and credentials
+secrets/*.txt
+secrets/*.crt
+secrets/*.key
+secrets/*.pem
+
+# Allow example templates
+!secrets/*.example
+
+# Ignore host data volumes
+/home/retanaka/data/

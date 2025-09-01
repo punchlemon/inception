@@ -2,38 +2,46 @@ version: "3.8"
 
 services:
   nginx:
+    image: nginx
     build: ./requirements/nginx
     container_name: nginx
-    ports: "443:443"
+    ports:
+      - "443:443"
     volumes:
-      - wp_data:/var/www/html
+      - /home/retanaka/data/wp:/var/www/html
     depends_on:
       - wordpress
     networks:
       - inception
     restart: always
     secrets:
-      - tls_cert
+      - tls_crt
       - tls_key
+    environment:
+      - DOMAIN_NAME=retanaka.42.fr
 
   wordpress:
+    image: wordpress
     build: ./requirements/wordpress
     container_name: wordpress
     env_file: .env
     volumes:
-      - wp_data:/var/www/html
+      - /home/retanaka/data/wp:/var/www/html
     depends_on:
       - mariadb
     networks:
       - inception
     restart: always
+    secrets:
+      - db_password
 
   mariadb:
+    image: mariadb
     build: ./requirements/mariadb
     container_name: mariadb
     env_file: .env
     volumes:
-      - db_data:/var/lib/mysql
+      - /home/retanaka/data/db:/var/lib/mysql
     networks:
       - inception
     restart: always
@@ -41,18 +49,14 @@ services:
       - db_password
       - db_root_password
 
-volumes:
-  wp_data:
-  db_data:
-
 networks:
   inception:
 
 secrets:
-  tls_cert:
-    file: ../secrets/tls_cert.txt
+  tls_crt:
+    file: ../secrets/tls.crt
   tls_key:
-    file: ../secrets/tls_key.txt
+    file: ../secrets/tls.key
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
