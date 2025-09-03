@@ -7,5 +7,8 @@ secrets/*.pem
 # Allow example templates
 !secrets/*.example
 
+# Ignore .env files with real credentials
+srcs/.env
+
 # Ignore host data volumes
 /home/retanaka/data/

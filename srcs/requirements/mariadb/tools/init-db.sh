@@ -6,9 +6,14 @@ if [[ "$1" == --socket=* ]]; then
   SOCKET="--socket=${1#--socket=}"
 fi
 
-# 環境変数または secrets からパスワード取得
-MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
-MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+# 環境変数または secrets からパスワード取得 (env優先)
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$(cat /run/secrets/db_root_password 2>/dev/null || true)}
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(cat /run/secrets/db_password 2>/dev/null || true)}
+
+if [ -z "$MYSQL_ROOT_PASSWORD" ] || [ -z "$MYSQL_PASSWORD" ]; then
+  echo "Error: MYSQL_ROOT_PASSWORD and MYSQL_PASSWORD must be set in environment or secrets" >&2
+  exit 1
+fi
 
 MYSQL_DATABASE=${MYSQL_DATABASE:-wordpress}
 # WordPress 用ユーザー
