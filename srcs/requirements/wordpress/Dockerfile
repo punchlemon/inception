@@ -27,6 +27,10 @@ RUN curl -o wordpress.tar.gz https://wordpress.org/latest.tar.gz \
     && tar -xvzf wordpress.tar.gz --strip-components=1 \
     && rm wordpress.tar.gz
 
+# Install WP-CLI
+RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v2.10.0/wp-cli-2.10.0.phar -o /usr/local/bin/wp \
+    && chmod +x /usr/local/bin/wp
+
 COPY conf/wp-config.php /var/www/html/wp-config.php
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY tools/entrypoint.sh /entrypoint.sh
