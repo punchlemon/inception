@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   nginx:
     image: nginx
@@ -9,14 +7,14 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/retanaka/data/wp:/var/www/html
+      - wp_data:/var/www/html
     depends_on:
       - wordpress
     networks:
       - inception
     restart: always
     environment:
-      - DOMAIN_NAME=retanaka.42.fr
+      - DOMAIN_NAME=${DOMAIN_NAME}
 
   wordpress:
     image: wordpress
@@ -26,8 +24,13 @@ services:
     env_file: .env
     environment:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ADMIN_USER=${MYSQL_ADMIN_USER}
+      - MYSQL_ADMIN_PASSWORD=${MYSQL_ADMIN_PASSWORD}
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
-      - /home/retanaka/data/wp:/var/www/html
+      - wp_data:/var/www/html
     depends_on:
       - mariadb
     networks:
@@ -43,12 +46,31 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ADMIN_USER=${MYSQL_ADMIN_USER}
+      - MYSQL_ADMIN_PASSWORD=${MYSQL_ADMIN_PASSWORD}
     volumes:
-      - /home/retanaka/data/db:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - inception
     restart: always
 
 networks:
   inception:
+    driver: bridge
+
+volumes:
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/reiji/data/wp
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/reiji/data/db
 

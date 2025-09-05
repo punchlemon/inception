@@ -9,5 +9,12 @@ if grep -q "put your unique phrase here" /var/www/html/wp-config.php; then
   done
 fi
 
+# MariaDBが起動するまで待機
+echo "Waiting for MariaDB to be ready..."
+while ! mysqladmin ping -h"mariadb" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent; do
+    sleep 1
+done
+echo "MariaDB is ready!"
+
 # php-fpm7.4を起動
-exec php7.4-fpm -F
+exec php-fpm7.4 -F

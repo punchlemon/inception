@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     php7.4-mbstring \
     php7.4-xml \
     php7.4-opcache \
+    php7.4-curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
@@ -30,7 +31,9 @@ COPY conf/wp-config.php /var/www/html/wp-config.php
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY tools/entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && mkdir -p /run/php \
+    && chown -R www-data:www-data /var/www/html
 
 CMD ["/entrypoint.sh"]
 

@@ -20,6 +20,10 @@ define('NONCE_SALT',       'put your unique phrase here');
 $table_prefix  = 'wp_';
 define('WP_DEBUG', false);
 
+// WordPress URL settings
+define('WP_HOME', 'https://retanaka.42.fr');
+define('WP_SITEURL', 'https://retanaka.42.fr');
+
 if ( !defined('ABSPATH') )
   define('ABSPATH', __DIR__ . '/');
 

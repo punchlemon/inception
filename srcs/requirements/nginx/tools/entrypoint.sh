@@ -16,4 +16,7 @@ if [ ! -s "$CRT_PATH" ] || [ ! -s "$KEY_PATH" ]; then
   chmod 600 "$KEY_PATH"
 fi
 
+# Update nginx.conf with the domain name
+sed -i "s/server_name.*;/server_name $DOMAIN;/" /etc/nginx/nginx.conf
+
 exec nginx -g 'daemon off;'
