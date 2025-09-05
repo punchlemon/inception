@@ -66,11 +66,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/reiji/data/wp
+      device: ${HOME}/data/wp
   db_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/reiji/data/db
+      device: ${HOME}/data/db
 

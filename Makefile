@@ -10,6 +10,7 @@ build:
 	$(COMPOSE) build
 
 up:
+	mkdir -p $(HOME)/data/wp $(HOME)/data/db
 	$(COMPOSE) up -d
 
 down:
