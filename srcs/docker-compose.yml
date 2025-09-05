@@ -4,6 +4,7 @@ services:
   nginx:
     image: nginx
     build: ./requirements/nginx
+    pull_policy: never
     container_name: nginx
     ports:
       - "443:443"
@@ -14,15 +15,13 @@ services:
     networks:
       - inception
     restart: always
-    secrets:
-      - tls_crt
-      - tls_key
     environment:
       - DOMAIN_NAME=retanaka.42.fr
 
   wordpress:
     image: wordpress
     build: ./requirements/wordpress
+    pull_policy: never
     container_name: wordpress
     env_file: .env
     environment:
@@ -34,12 +33,11 @@ services:
     networks:
       - inception
     restart: always
-    secrets:
-      - db_password
 
   mariadb:
     image: mariadb
     build: ./requirements/mariadb
+    pull_policy: never
     container_name: mariadb
     env_file: .env
     environment:
@@ -50,20 +48,7 @@ services:
     networks:
       - inception
     restart: always
-    secrets:
-      - db_password
-      - db_root_password
 
 networks:
   inception:
-
-secrets:
-  tls_crt:
-    file: ../secrets/tls.crt
-  tls_key:
-    file: ../secrets/tls.key
-  db_password:
-    file: ../secrets/db_password.txt
-  db_root_password:
-    file: ../secrets/db_root_password.txt
 

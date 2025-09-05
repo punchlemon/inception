@@ -9,5 +9,5 @@ if grep -q "put your unique phrase here" /var/www/html/wp-config.php; then
   done
 fi
 
-# php-fpmを起動
-exec php-fpm -F
+# php-fpm7.4を起動
+exec php7.4-fpm -F

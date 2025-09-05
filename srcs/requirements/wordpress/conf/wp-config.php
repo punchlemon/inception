@@ -1,7 +1,8 @@
 <?php
 define('DB_NAME', getenv('MYSQL_DATABASE'));
 define('DB_USER', getenv('MYSQL_USER'));
-define('DB_PASSWORD', getenv('MYSQL_PASSWORD') ?: (file_exists('/run/secrets/db_password') ? trim(file_get_contents('/run/secrets/db_password')) : ''));
+// Password only from environment now
+define('DB_PASSWORD', getenv('MYSQL_PASSWORD'));
 define('DB_HOST', 'mariadb:3306');
 
 define('DB_CHARSET', 'utf8');
