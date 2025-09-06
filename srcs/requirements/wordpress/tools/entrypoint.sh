@@ -8,6 +8,15 @@ while ! mysqladmin ping -h"mariadb" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --si
 done
 echo "MariaDB is ready!"
 
+# データベース接続をテスト（MariaDBでDBとユーザーは既に作成済み）
+echo "Testing database connection..."
+mysql -h"mariadb" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" -D"${MYSQL_DATABASE}" \
+  -e "SELECT 1;" >/dev/null 2>&1 || {
+    echo "Error: Cannot connect to database ${MYSQL_DATABASE} with user ${MYSQL_USER}"
+    exit 1
+  }
+echo "Database connection successful!"
+
 # WordPress salts の初期化（初回のみ）
 if grep -q "put your unique phrase here" /var/www/html/wp-config.php; then
   for k in AUTH_KEY SECURE_AUTH_KEY LOGGED_IN_KEY NONCE_KEY AUTH_SALT SECURE_AUTH_SALT LOGGED_IN_SALT NONCE_SALT; do
